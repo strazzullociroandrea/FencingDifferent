@@ -11,7 +11,7 @@ const recuperaAtleti = require("./services/recuperaAtleti");
 const recuperaGironi = require("./services/recuperaGironi");
 const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
 
-(async () => {
+(() => {
 
     //gestione cors
     const corsOptions = {
@@ -97,6 +97,42 @@ const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
         }
     });
 
+    /**
+     * Gestione richiesta servizi/pagine non disponibili
+     */
+    app.use((req, res, next) => {
+        res.status(404).send(`
+        <!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Pagina non trovata</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Oops! Pagina non trovata</h1>
+    <p>La pagina che stai cercando non esiste.</p>
+    <a href="/scherma">Torna alla pagina iniziale</a>
+</body>
+</html>
+
+        `);
+      });
     /**
      * Creazione del server ed ascolto sulla porta effimera 3040
      */
