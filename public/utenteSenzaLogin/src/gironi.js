@@ -8,6 +8,8 @@ const dataParam = url.searchParams.get("data");
 const classificaIniziale = document.getElementById("classificaIniziale");
 const eliminazioneDiretta = document.getElementById("eliminazioneDiretta");
 const gironiMenu = document.getElementById("gironiMenu");
+const classificaGironi = document.getElementById("classificaGironi");
+const classificaFinale = document.getElementById("classificaFinale");
 
 /**
  * Al caricamento della pagina viene fatto il render dei gironi
@@ -38,4 +40,20 @@ gironiMenu.onclick = () => {
 eliminazioneDiretta.onclick = () => {
   window.location.href =
     "./elimDiretta.html?nomeTorneo=" + idParam + "&data=" + dataParam;
+};
+
+/**
+ * Gestione button cambio pagina da gironi a pagina classifica gironi
+ */
+classificaGironi.onclick = () => {
+  window.location.href =
+    "./classificaGironi.html?nomeTorneo=" + idParam + "&data=" + dataParam;
+};
+
+/**
+ * Gestione button cambio pagina da gironi a classifica finale
+ */
+classificaFinale.onclick = () => {
+  window.location.href =
+    "./classificaFinale.html?nomeTorneo=" + idParam + "&data=" + dataParam;
 };

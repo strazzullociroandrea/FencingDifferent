@@ -1,5 +1,3 @@
-//Import moduli
-import { renderEliminazioneDiretta } from "./render.js";
 //Lettura url
 const url = new URL(window.location.href);
 const idParam = url.searchParams.get("nomeTorneo");
@@ -13,14 +11,7 @@ const classificaFinale = document.getElementById("classificaFinale");
 
 
 /**
- * Al caricamento della pagina viene fatto il render dell'eliminazione diretta
- */
-window.onload = () => {
-  renderEliminazioneDiretta(idParam, dataParam);
-}
-
-/**
- * Gestione button cambio pagina da eliminazione diretta a classifica iniziale
+ * Gestione button cambio pagina da classifica gironi a classifica iniziale
  */
 classificaIniziale.onclick = () => {
   window.location.href =
@@ -28,7 +19,7 @@ classificaIniziale.onclick = () => {
 };
 
 /**
- * Gestione button cambio pagina da eliminazione diretta a pagina dei gironi
+ * Gestione button cambio pagina da classifica gironi a pagina dei gironi
  */
 gironiMenu.onclick = () => {
   window.location.href =
@@ -36,7 +27,7 @@ gironiMenu.onclick = () => {
 };
 
 /**
- * Gestione button cambio pagina da eliminazione diretta a se stessa
+ * Gestione button cambio pagina da classifica gironi a pagina eliminazione diretta
  */
 eliminazioneDiretta.onclick = () => {
   window.location.href =
@@ -44,7 +35,7 @@ eliminazioneDiretta.onclick = () => {
 };
 
 /**
- * Gestione button cambio pagina da eliminazione diretta a pagina classifica gironi
+ * Gestione button cambio pagina da classifica gironi a se stessa
  */
 classificaGironi.onclick = () => {
   window.location.href =
@@ -52,7 +43,7 @@ classificaGironi.onclick = () => {
 };
 
 /**
- * Gestione button cambio pagina da eliminazione diretta a classifica finale
+ * Gestione button cambio pagina da classifica gironi a classifica finale
  */
 classificaFinale.onclick = () => {
   window.location.href =
