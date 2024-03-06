@@ -48,9 +48,9 @@ const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
      * Funzione per recuperare i tornei salvati sul server
      */
     app.get("/scherma/tornei", async (request, response) => {
-        
+
         try {
-            recuperaTornei().then(result=>{
+            recuperaTornei().then(result => {
                 response.json({ response: result.reverse() });
             });
         } catch (error) {
@@ -125,14 +125,16 @@ const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
     </style>
 </head>
 <body>
-    <h1>Oops! Pagina non trovata</h1>
-    <p>La pagina che stai cercando non esiste.</p>
-    <a href="/scherma">Torna alla pagina iniziale</a>
+    <h1>Benvenuto nella pagina principale del server casaponissa.ddns.net</h1>
+    
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <a href="/scherma">Vai alla pagina di "Fencing Different"</a>
+    <a href="/phpmyadmin">Vai alla pagina del DB</a>
 </body>
 </html>
 
         `);
-      });
+    });
     /**
      * Creazione del server ed ascolto sulla porta effimera 3040
      */
