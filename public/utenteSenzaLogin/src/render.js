@@ -6,12 +6,11 @@ import {
   recuperaGironi,
 } from "./cache.js";
 
-
 //------------------------- INIZIO PAGINA PRINCIPALE TORNEI ---------------------------------------
 //Dom
 const torneiTable = document.getElementById("tornei-container");
 
-// template tornei - template 
+// template tornei - template
 const templateFirstTornei = `<div class="row mt-5"><div class="col-12">%value</div></div>`;
 const templateTdTornei = `<div class="col-6 mt-2" >%value</div>`;
 const templateDivTornei = `
@@ -71,7 +70,10 @@ export const renderTornei = () => {
           div.addEventListener("click", (event) => {
             const id = event.currentTarget.id.split("_");
             window.location.href =
-              "./classificaIniziale.html?nomeTorneo=" + id[0] + "&data=" + id[1];
+              "./classificaIniziale.html?nomeTorneo=" +
+              id[0] +
+              "&data=" +
+              id[1];
           });
         });
       }
@@ -88,8 +90,8 @@ const templateIniziale = `<tr><th>INDICE</th><th>COGNOME NOME</th><th>RANK</th><
 
 /**
  * Funzione per il rendering in finestra della pagina iniziale - la pagina della classifica iniziale
- * @param {*} nometorneo 
- * @param {*} data 
+ * @param {*} nometorneo
+ * @param {*} data
  */
 export const renderIniziale = (nometorneo, data) => {
   recuperaAtleta(nometorneo, data).then((response) => {
@@ -118,9 +120,9 @@ export const renderIniziale = (nometorneo, data) => {
 const tableGironi = document.getElementById("tableGironi");
 /**
  * Funzione per distribuire i giocatori in un determinato girone in modo circolare
- * @param {*} numeroGironi 
- * @param {*} listaGiocatori 
- * @returns 
+ * @param {*} numeroGironi
+ * @param {*} listaGiocatori
+ * @returns
  */
 function distribuisciGiocatori(numeroGironi, listaGiocatori) {
   const numeroGiocatori = listaGiocatori.length;
@@ -199,19 +201,16 @@ export function renderincontri(lista) {
   return table;
 }
 
-
 /**
- * Funzione per dividere l'array di response della promise in un array di dizionari, dove ogni dizionario contiene 
+ * Funzione per dividere l'array di response della promise in un array di dizionari, dove ogni dizionario contiene
  * le informazioni dei singoli gironi. L'array restituito sarà messo in ordine di inserimento
- * @param {*} array 
- * @returns 
+ * @param {*} array
+ * @returns
  */
-const dividiPerGirone = (response) =>{
+const dividiPerGirone = (response) => {
   const array = [];
   response.forEach((element) => {
-    const index = array.findIndex(
-      (girone) => girone.id === element.idFase
-    );
+    const index = array.findIndex((girone) => girone.id === element.idFase);
     if (index !== -1) {
       array[index].partecipanti.push(element);
     } else {
@@ -221,17 +220,17 @@ const dividiPerGirone = (response) =>{
       });
     }
   });
-  array.sort(function(a, b) {
+  array.sort(function (a, b) {
     return a.id - b.id;
   });
   return array;
-}
+};
 
 /**
  * Funzione per accoppiare ad ogni Sfidante l'atleta Sfidato in base all'assalto
- * @param {*} array 
+ * @param {*} array
  */
-const accoppiaPerAssalto = (array) =>{
+const accoppiaPerAssalto = (array) => {
   const divisiPerAssalto = [];
   array.forEach((girone) => {
     const jsonTemp = { id: girone.id };
@@ -256,39 +255,39 @@ const accoppiaPerAssalto = (array) =>{
     divisiPerAssalto.push(jsonTemp);
   });
   return divisiPerAssalto;
-}
+};
 
 /**
  * Funzione per la visualizzazione in finestra dei gironi
- * @param {*} nomeTorneo 
- * @param {*} data 
+ * @param {*} nomeTorneo
+ * @param {*} data
  */
-export const renderGironi = (nomeTorneo, data)  =>{
+export const renderGironi = (nomeTorneo, data) => {
   recuperaGironi(nomeTorneo, data)
-  .then((response) => {
-    if (response) {
-      //Divisione per gironi
-      let divisiPerGirone = dividiPerGirone(response);
-      //Accoppiamento atleti con stesso assalto (Sfidante vs Sfidato)
-      const divisiPerAssalto = accoppiaPerAssalto(divisiPerGirone);
-      //Visualizzazione in finestra
-      divisiPerGirone.forEach((girone) => {
-        const partecipanti = girone.partecipanti;
-        const partecipantiRedux = partecipanti.filter(
-          (elem, index, self) =>
-            index ===
-            self.findIndex((t) => {
-              return (
-                t.nome === elem.nome &&
-                t.cognome === elem.cognome &&
-                t.codiceFis === elem.codiceFis &&
-                t.societa === elem.societa &&
-                t.ranking === elem.ranking
-              );
-            })
-        );
-        distribuisciGiocatori(2, partecipantiRedux).forEach((result) => {
-          let html = `
+    .then((response) => {
+      if (response) {
+        //Divisione per gironi
+        let divisiPerGirone = dividiPerGirone(response);
+        //Accoppiamento atleti con stesso assalto (Sfidante vs Sfidato)
+        const divisiPerAssalto = accoppiaPerAssalto(divisiPerGirone);
+        //Visualizzazione in finestra
+        divisiPerGirone.forEach((girone) => {
+          const partecipanti = girone.partecipanti;
+          const partecipantiRedux = partecipanti.filter(
+            (elem, index, self) =>
+              index ===
+              self.findIndex((t) => {
+                return (
+                  t.nome === elem.nome &&
+                  t.cognome === elem.cognome &&
+                  t.codiceFis === elem.codiceFis &&
+                  t.societa === elem.societa &&
+                  t.ranking === elem.ranking
+                );
+              })
+          );
+          distribuisciGiocatori(2, partecipantiRedux).forEach((result) => {
+            let html = `
             <table class="table table-bordered text-white text-center pedi-tabella mt-5">
               <thead>
                <tr>
@@ -297,81 +296,274 @@ export const renderGironi = (nomeTorneo, data)  =>{
                 <th>RANK</th>
                 <th>SOCIETÀ</th>
                 `;
-                for (let index = 0; index < result.length; index++) {
-                  let g = `<th>` + (index + 1) + `</th>`;
-                  html += g;
-                }
-                html += `
+            for (let index = 0; index < result.length; index++) {
+              let g = `<th>` + (index + 1) + `</th>`;
+              html += g;
+            }
+            html += `
               </tr>
             </thead>
             <tbody>
           `;
-          result.forEach((partecipante, index) => {
-            const assaltiInComune = [];
-            divisiPerAssalto.forEach((girone) => {
-              girone.partecipanti.forEach((assalto) => {
-                if (
-                  assalto.partecipanteUno.codiceFis ===
-                  partecipante.codiceFis ||
-                  assalto.partecipanteDue.codiceFis === partecipante.codiceFis
-                ) {
-                  assaltiInComune.push(assalto);
-                }
-              });
-            });
-
-            html +=
-              "<tr><td>" +
-              partecipante.cognome +
-              "</td><td>" +
-              partecipante.nome +
-              "</td><td>" +
-              partecipante.ranking +
-              "</td><td>" +
-              partecipante.societa +
-              "</td>";
-            result.forEach((altroPartecipante, indexAltro) => {
-              if (index !== indexAltro) {
-                let punteggioTemp = "-";
-                assaltiInComune.forEach((assalto) => {
+            result.forEach((partecipante, index) => {
+              const assaltiInComune = [];
+              divisiPerAssalto.forEach((girone) => {
+                girone.partecipanti.forEach((assalto) => {
                   if (
-                    (assalto.partecipanteUno.codiceFis ===
-                      partecipante.codiceFis &&
-                      assalto.partecipanteDue.codiceFis ===
-                      altroPartecipante.codiceFis) ||
-                    (assalto.partecipanteDue.codiceFis ===
-                      partecipante.codiceFis &&
-                      assalto.partecipanteUno.codiceFis ===
-                      altroPartecipante.codiceFis)
+                    assalto.partecipanteUno.codiceFis ===
+                      partecipante.codiceFis ||
+                    assalto.partecipanteDue.codiceFis === partecipante.codiceFis
                   ) {
-                    punteggioTemp =
-                      assalto.partecipanteUno.codiceFis ===
-                        partecipante.codiceFis
-                        ? assalto.partecipanteUno.punteggio
-                        : assalto.partecipanteDue.punteggio;
+                    assaltiInComune.push(assalto);
                   }
                 });
-                html += "<td>" + punteggioTemp + "</td>";
-              } else {
-                html += "<td></td>";
-              }
+              });
+
+              html +=
+                "<tr><td>" +
+                partecipante.cognome +
+                "</td><td>" +
+                partecipante.nome +
+                "</td><td>" +
+                partecipante.ranking +
+                "</td><td>" +
+                partecipante.societa +
+                "</td>";
+              result.forEach((altroPartecipante, indexAltro) => {
+                if (index !== indexAltro) {
+                  let punteggioTemp = "-";
+                  assaltiInComune.forEach((assalto) => {
+                    if (
+                      (assalto.partecipanteUno.codiceFis ===
+                        partecipante.codiceFis &&
+                        assalto.partecipanteDue.codiceFis ===
+                          altroPartecipante.codiceFis) ||
+                      (assalto.partecipanteDue.codiceFis ===
+                        partecipante.codiceFis &&
+                        assalto.partecipanteUno.codiceFis ===
+                          altroPartecipante.codiceFis)
+                    ) {
+                      punteggioTemp =
+                        assalto.partecipanteUno.codiceFis ===
+                        partecipante.codiceFis
+                          ? assalto.partecipanteUno.punteggio
+                          : assalto.partecipanteDue.punteggio;
+                    }
+                  });
+                  html += "<td>" + punteggioTemp + "</td>";
+                } else {
+                  html += "<td></td>";
+                }
+              });
+              html += "</tr>";
             });
-            html += "</tr>";
+
+            html += "</tbody></table>";
+            html += renderincontri(result);
+            tableGironi.innerHTML += html;
           });
-
-          html += "</tbody></table>";
-          html += renderincontri(result);
-          tableGironi.innerHTML += html;
         });
-      });
-    }
-  }).catch(error =>{
-    console.log(error);
-  })
-}
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
-//------------------------- FINE PAGINA GIRONI  ---------------------------------------
-//------------------------- INIZIO PAGINA ELIMINAZIONE DIRETTA ---------------------------------------
+//------------------------- FINE PAGINA GIRONI  --------------------------------------------
+//------------------------- INIZIO CLASSIFICA GIRONI ---------------------------------------
+export const renderClassificaGironi = (nomeTorneo, data) => {
+  recuperaGironi(nomeTorneo, data)
+    .then((response) => {
+      if (response) {
+        let contaGirone = 1;
+        const listaGir = [];
+        //Divisione per gironi
+        let divisiPerGirone = dividiPerGirone(response);
+        //Accoppiamento atleti con stesso assalto (Sfidante vs Sfidato)
+        const divisiPerAssalto = accoppiaPerAssalto(divisiPerGirone);
+        //Visualizzazione in finestra
+        divisiPerGirone.forEach((girone) => {
+          const partecipanti = girone.partecipanti;
+          const partecipantiRedux = partecipanti.filter(
+            (elem, index, self) =>
+              index ===
+              self.findIndex((t) => {
+                return (
+                  t.nome === elem.nome &&
+                  t.cognome === elem.cognome &&
+                  t.codiceFis === elem.codiceFis &&
+                  t.societa === elem.societa &&
+                  t.ranking === elem.ranking
+                );
+              })
+          );
+          distribuisciGiocatori(2, partecipantiRedux).forEach((result) => {
+            const tot = {};
+            tot["girone"] = contaGirone++;
+            const lista = [];
+            result.forEach((partecipante, index) => {
+              let obj = {};
+              const assaltiInComune = [];
+              divisiPerAssalto.forEach((girone) => {
+                girone.partecipanti.forEach((assalto) => {
+                  if (
+                    assalto.partecipanteUno.codiceFis ===
+                      partecipante.codiceFis ||
+                    assalto.partecipanteDue.codiceFis === partecipante.codiceFis
+                  ) {
+                    assaltiInComune.push(assalto);
+                  }
+                });
+              });
+
+              obj["cognome"] = partecipante.cognome;
+              obj["nome"] = partecipante.nome;
+              obj["ranking"] = partecipante.ranking;
+              obj["societa"] = partecipante.societa;
+              obj["assalti"] = [];
+
+              result.forEach((altroPartecipante, indexAltro) => {
+                if (index !== indexAltro) {
+                  let punteggioTemp = "-";
+                  assaltiInComune.forEach((assalto) => {
+                    if (
+                      (assalto.partecipanteUno.codiceFis ===
+                        partecipante.codiceFis &&
+                        assalto.partecipanteDue.codiceFis ===
+                          altroPartecipante.codiceFis) ||
+                      (assalto.partecipanteDue.codiceFis ===
+                        partecipante.codiceFis &&
+                        assalto.partecipanteUno.codiceFis ===
+                          altroPartecipante.codiceFis)
+                    ) {
+                      punteggioTemp =
+                        assalto.partecipanteUno.codiceFis ===
+                        partecipante.codiceFis
+                          ? assalto.partecipanteUno.punteggio
+                          : assalto.partecipanteDue.punteggio;
+                    }
+                  });
+                  obj.assalti.push(punteggioTemp);
+                } else {
+                  obj.assalti.push(" ");
+                }
+              });
+              lista.push(obj);
+            });
+            tot["atleti"] = lista;
+            listaGir.push(tot);
+          });
+        });
+        riordinaLista(creaClassGir(listaGir, creaMatrici(listaGir)));
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const creaMatrici = (lista) => {
+  const output = [];
+  lista.forEach((element) => {
+    const matrix = [];
+    element.atleti.forEach((element2) => {
+      const row = [];
+      element2.assalti.forEach((element3) => {
+        row.push(element3);
+      });
+      matrix.push(row);
+    });
+    output.push(matrix);
+  });
+  return output;
+};
+
+const creaClassGir = (listaGironi, listaMatrix) => {
+  const output = [];
+  listaGironi.forEach((gir, countMatrix) => {
+    gir.atleti.forEach((atl, index) => {
+      let countWin = 0;
+      let sum = 0;
+      listaMatrix[countMatrix][index].forEach((stoccate) => {
+        if (stoccate !== " " && stoccate !== "-" && stoccate !== "") {
+          if (stoccate == "V") {
+            sum += 5;
+            countWin++;
+          } else {
+            sum += Number.parseInt(stoccate, 10);
+          }
+        }
+      });
+
+      let sumDif = 0;
+      for (let k = 0; k < listaMatrix[countMatrix].length; k++) {
+        if (
+          listaMatrix[countMatrix][k][index] !== "" &&
+          listaMatrix[countMatrix][k][index] !== "-" &&
+          listaMatrix[countMatrix][k][index] !== " "
+        ) {
+          if (listaMatrix[countMatrix][k][index] == "V") {
+            sumDif += 5;
+          } else {
+            sumDif += Number.parseInt(listaMatrix[countMatrix][k][index], 10);
+          }
+        }
+      }
+      let obj = {
+        cognome: atl.cognome,
+        nome: atl.nome,
+        societa: atl.societa,
+        date: sum,
+        subite: sumDif,
+        differenza: sum - sumDif,
+        aliquota: Number.parseFloat(
+          (countWin / (listaMatrix[countMatrix][index].length - 1)).toFixed(2)
+        ),
+      };
+      output.push(obj);
+    });
+  });
+  return output;
+};
+
+const riordinaLista = (lista) => {
+  console.log(lista);
+  const output = [];
+  lista.sort((a, b) => b.aliquota - a.aliquota);
+
+  const listaDiff = [];
+  lista.forEach(function (oggetto) {
+    listaDiff.push(oggetto.differenza);
+  });
+  listaDiff.sort((a, b) => b - a);
+  const listaDiffFiltrata = Array.from(new Set(listaDiff));
+  const appoggioTotal = [];
+  listaDiffFiltrata.forEach((differen) => {
+    const appoggio = [];
+    lista.forEach((plebeo) => {
+      if (differen === plebeo.differenza) {
+        appoggio.push(plebeo);
+      }
+    });
+    appoggioTotal.push(appoggio);
+  });
+
+  appoggioTotal.forEach((gruppo) => {
+    gruppo.sort((a, b) => b.date - a.date);
+  });
+
+  appoggioTotal.forEach((riga) => {
+    riga.forEach((tipo) => {
+      output.push(tipo);
+    });
+  });
+
+  console.log(output);
+  return output;
+};
+//------------------------- FINE CLASSIFICA GIRONI  ----------------------------------------
+//------------------------- INIZIO PAGINA ELIMINAZIONE DIRETTA -----------------------------
 //Dom
 const tabellone = document.getElementById("tabellone");
 //Template
@@ -425,4 +617,3 @@ export const renderEliminazioneDiretta = (nomeTorneo, data) => {
       );
     });
 };
-

@@ -1,3 +1,5 @@
+//Import moduli
+import { renderClassificaGironi } from "./render.js";
 //Lettura url
 const url = new URL(window.location.href);
 const idParam = url.searchParams.get("nomeTorneo");
@@ -9,6 +11,12 @@ const classificaIniziale = document.getElementById("classificaIniziale");
 const classificaGironi = document.getElementById("classificaGironi");
 const classificaFinale = document.getElementById("classificaFinale");
 
+/**
+ * Al caricamento della pagina viene fatto il render della classifica gironi
+ */
+window.onload = () => {
+  renderClassificaGironi(idParam, dataParam);
+};
 
 /**
  * Gestione button cambio pagina da classifica gironi a classifica iniziale
