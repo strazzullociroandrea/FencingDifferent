@@ -372,7 +372,7 @@ export const renderGironi = (nomeTorneo, data) => {
 
 //------------------------- FINE PAGINA GIRONI  --------------------------------------------
 //------------------------- INIZIO CLASSIFICA GIRONI ---------------------------------------
-export const renderClassificaGironi = (nomeTorneo, data) => {
+export const creaClassificaGironi = (nomeTorneo, data, percentualeElim) => {
   recuperaGironi(nomeTorneo, data)
     .then((response) => {
       if (response) {
@@ -455,7 +455,12 @@ export const renderClassificaGironi = (nomeTorneo, data) => {
             listaGir.push(tot);
           });
         });
-        riordinaLista(creaClassGir(listaGir, creaMatrici(listaGir)));
+        console.log(
+          riordinaLista(
+            creaClassGir(listaGir, creaMatrici(listaGir)),
+            percentualeElim
+          )
+        );
       }
     })
     .catch((error) => {
@@ -527,8 +532,7 @@ const creaClassGir = (listaGironi, listaMatrix) => {
   return output;
 };
 
-const riordinaLista = (lista) => {
-  console.log(lista);
+const riordinaLista = (lista, percentualeElim) => {
   const output = [];
   lista.sort((a, b) => b.aliquota - a.aliquota);
 
@@ -558,10 +562,19 @@ const riordinaLista = (lista) => {
       output.push(tipo);
     });
   });
-
-  console.log(output);
+  let numElim = Math.floor((output.length / 100) * percentualeElim);
+  for (let z = output.length - 1; z >= 0; z--) {
+    if (numElim !== 0) {
+      output[z]["stato"] = "Eliminato";
+      numElim--;
+    } else {
+      output[z]["stato"] = "Qualificato";
+    }
+  }
   return output;
 };
+
+export const renderClassificaGironi = (classifica) => {};
 //------------------------- FINE CLASSIFICA GIRONI  ----------------------------------------
 //------------------------- INIZIO PAGINA ELIMINAZIONE DIRETTA -----------------------------
 //Dom
