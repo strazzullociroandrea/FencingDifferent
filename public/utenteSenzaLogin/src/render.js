@@ -455,7 +455,7 @@ export const creaClassificaGironi = (nomeTorneo, data, percentualeElim) => {
             listaGir.push(tot);
           });
         });
-        console.log(
+        renderClassificaGironi(
           riordinaLista(
             creaClassGir(listaGir, creaMatrici(listaGir)),
             percentualeElim
@@ -574,7 +574,34 @@ const riordinaLista = (lista, percentualeElim) => {
   return output;
 };
 
-export const renderClassificaGironi = (classifica) => {};
+/**
+ * Funzione per il rendering in finestra della pagina iniziale - la pagina della classifica iniziale
+ * @param {*} nometorneo
+ * @param {*} data
+ */
+const renderClassificaGironi = (classifica) => {
+  //table - DOM
+  const classificaGironiTabella = document.getElementById(
+    "classificaGironiTabella"
+  );
+  //template
+  const templateClassGir = `<tr><th>POS</th><th>COGNOME</th><th>NOME</th><th>SOCIETA</th><th>V/A</th><th>DIFF.</th><th>DATE</th><th>STATO</th></tr>`;
+  let html = "";
+  html = templateClassGir;
+  classifica.forEach((element, index) => {
+    html += templateClassGir
+      .replaceAll("th>", "td>")
+      .replace("POS", index + 1)
+      .replace("COGNOME", element.cognome)
+      .replace("NOME", element.nome)
+      .replace("SOCIETA", element.societa)
+      .replace("V/A", element.aliquota)
+      .replace("DIFF.", element.differenza)
+      .replace("DATE", element.date)
+      .replace("STATO", element.stato);
+  });
+  classificaGironiTabella.innerHTML = html;
+};
 //------------------------- FINE CLASSIFICA GIRONI  ----------------------------------------
 //------------------------- INIZIO PAGINA ELIMINAZIONE DIRETTA -----------------------------
 //Dom

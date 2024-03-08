@@ -1,5 +1,5 @@
 //Import moduli
-import { creaClassificaGironi, renderClassificaGironi } from "./render.js";
+import { creaClassificaGironi } from "./render.js";
 //Lettura url
 const url = new URL(window.location.href);
 const idParam = url.searchParams.get("nomeTorneo");
