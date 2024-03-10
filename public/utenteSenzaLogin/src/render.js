@@ -615,39 +615,6 @@ export const renderEliminazioneDiretta = (nomeTorneo, data) => {
   recuperaEliminazioneDiretta(nomeTorneo, data)
     .then((response) => {
       if (response) {
-        const divisiPerGirone = [];
-        response.forEach((element) => {
-          const index = divisiPerGirone.findIndex(
-            (girone) => girone.id === element.id
-          );
-          if (index !== -1) {
-            const partecipantePresenteIndex = divisiPerGirone[
-              index
-            ].partecipanti.findIndex(
-              (partecipante) => partecipante.codiceFis === element.codiceFis
-            );
-            if (partecipantePresenteIndex !== -1) {
-              let punteggioProva = element.punteggio;
-              let oldPunteggio =
-                divisiPerGirone[index].partecipanti[partecipantePresenteIndex]
-                  .punteggio;
-              punteggioProva = parseInt(punteggioProva) || punteggioProva;
-              oldPunteggio = parseInt(oldPunteggio) || oldPunteggio;
-              oldPunteggio += punteggioProva;
-              divisiPerGirone[index].partecipanti[
-                partecipantePresenteIndex
-              ].punteggio = oldPunteggio;
-            } else {
-              divisiPerGirone[index].partecipanti.push(element);
-            }
-          } else {
-            divisiPerGirone.push({
-              id: element.id,
-              partecipanti: [element],
-            });
-          }
-        });
-        console.log(divisiPerGirone);
       }
     })
     .catch((error) => {
@@ -657,3 +624,6 @@ export const renderEliminazioneDiretta = (nomeTorneo, data) => {
       );
     });
 };
+
+//------------------------- FINE CLASSIFICA GIRONI  ----------------------------------------
+//------------------------- INIZIO PAGINA ELIMINAZIONE DIRETTA -----------------------------

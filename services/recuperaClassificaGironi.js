@@ -10,7 +10,7 @@ const recuperaClassificaGironi = async(nomeTorneo, data) =>{
     try {
         const conf = JSON.parse(fs.readFileSync("conf.json"));
         const connection = await mysql.createConnection(conf);
-        const [rows, fields] = await connection.execute("SELECT atleta.nome,atleta.cognome,atleta.societa,partecipare.punteggio FROM atleta INNER JOIN partecipare ON codiceFis=codiceFisAtleta INNER JOIN fase ON id=idFase WHERE fase.tipologia='Girone' AND fase.svolta = 1 AND partecipare.nomeTorneo='"+nomeTorneo+"' AND partecipare.dataTorneo='"+data+"';");
+        const [rows, fields] = await connection.execute("SELECT atleta.nome,atleta.cognome,atleta.societa,partecipare.punteggio,fase.id FROM atleta INNER JOIN partecipare ON codiceFis=codiceFisAtleta INNER JOIN fase ON id=idFase WHERE fase.tipologia='Girone' AND fase.svolta = 1 AND partecipare.nomeTorneo='"+nomeTorneo+"' AND partecipare.dataTorneo='"+data+"';");
         await connection.end();
         if (rows.length > 0) {
             return rows;

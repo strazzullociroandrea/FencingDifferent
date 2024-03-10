@@ -1,5 +1,6 @@
 //Import moduli
 import { creaClassificaGironi } from "./render.js";
+import {recuperaTornei} from "./cache.js";
 //Lettura url
 const url = new URL(window.location.href);
 const idParam = url.searchParams.get("nomeTorneo");
@@ -15,7 +16,14 @@ const classificaFinale = document.getElementById("classificaFinale");
  * Al caricamento della pagina viene fatto il render della classifica gironi
  */
 window.onload = () => {
-  creaClassificaGironi(idParam, dataParam, 20);
+  recuperaTornei().then(response=>{
+    response.forEach(torneo=>{
+      if(torneo.nome === idParam && torneo.data === dataParam){
+        const {percentualeEliminazione} = torneo;
+        creaClassificaGironi(idParam, dataParam, percentualeEliminazione);
+      }
+    })
+  })
 };
 
 /**

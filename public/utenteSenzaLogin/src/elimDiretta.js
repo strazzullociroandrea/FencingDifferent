@@ -16,6 +16,7 @@ const classificaFinale = document.getElementById("classificaFinale");
  * Al caricamento della pagina viene fatto il render dell'eliminazione diretta
  */
 window.onload = () => {
+  console.log("visualizzo l'eliminazione diretta");
   renderEliminazioneDiretta(idParam, dataParam);
 }
 
