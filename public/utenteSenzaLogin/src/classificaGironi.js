@@ -20,7 +20,7 @@ window.onload = () => {
     response.forEach(torneo=>{
       if(torneo.nome === idParam && torneo.data === dataParam){
         const {percentualeEliminazione} = torneo;
-        creaClassificaGironi(idParam, dataParam, percentualeEliminazione);
+        creaClassificaGironi(idParam, dataParam, percentualeEliminazione, 2);
       }
     })
   })

@@ -262,7 +262,7 @@ const accoppiaPerAssalto = (array) => {
  * @param {*} nomeTorneo
  * @param {*} data
  */
-export const renderGironi = (nomeTorneo, data) => {
+export const renderGironi = (nomeTorneo, data, numeroGir) => {
   recuperaGironi(nomeTorneo, data)
     .then((response) => {
       if (response) {
@@ -286,7 +286,7 @@ export const renderGironi = (nomeTorneo, data) => {
                 );
               })
           );
-          distribuisciGiocatori(2, partecipantiRedux).forEach((result) => {
+          distribuisciGiocatori(numeroGir, partecipantiRedux).forEach((result) => {
             let html = `
             <table class="table table-bordered text-white text-center pedi-tabella mt-5">
               <thead>
@@ -372,7 +372,7 @@ export const renderGironi = (nomeTorneo, data) => {
 
 //------------------------- FINE PAGINA GIRONI  --------------------------------------------
 //------------------------- INIZIO CLASSIFICA GIRONI ---------------------------------------
-export const creaClassificaGironi = (nomeTorneo, data, percentualeElim) => {
+export const creaClassificaGironi = (nomeTorneo, data, percentualeElim, numeroGir) => {
   recuperaGironi(nomeTorneo, data)
     .then((response) => {
       if (response) {
@@ -398,7 +398,7 @@ export const creaClassificaGironi = (nomeTorneo, data, percentualeElim) => {
                 );
               })
           );
-          distribuisciGiocatori(2, partecipantiRedux).forEach((result) => {
+          distribuisciGiocatori(numeroGir, partecipantiRedux).forEach((result) => {
             const tot = {};
             tot["girone"] = contaGirone++;
             const lista = [];
@@ -625,5 +625,4 @@ export const renderEliminazioneDiretta = (nomeTorneo, data) => {
     });
 };
 
-//------------------------- FINE CLASSIFICA GIRONI  ----------------------------------------
-//------------------------- INIZIO PAGINA ELIMINAZIONE DIRETTA -----------------------------
+//------------------------- FINE ELIMINAZIONE DIRETTA  ----------------------------------------

@@ -15,7 +15,7 @@ const classificaFinale = document.getElementById("classificaFinale");
  * Al caricamento della pagina viene fatto il render dei gironi
  */
 window.onload = () => {
-  renderGironi(idParam, dataParam);
+  renderGironi(idParam, dataParam, 2);
 };
 
 /**
