@@ -19,8 +19,9 @@ window.onload = () => {
   recuperaTornei().then(response=>{
     response.forEach(torneo=>{
       if(torneo.nome === idParam && torneo.data === dataParam){
-        const {percentualeEliminazione} = torneo;
-        creaClassificaGironi(idParam, dataParam, percentualeEliminazione, 2);
+        const {percentualeEliminazione, nGironi} = torneo;
+        creaClassificaGironi(idParam, dataParam, percentualeEliminazione, nGironi);
+       
       }
     })
   })
