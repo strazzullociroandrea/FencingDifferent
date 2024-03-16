@@ -4,7 +4,8 @@ const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
+const fs = require("fs");
+const conf = JSON.parse(fs.readFileSync("conf.json"));
 //servizi 
 const recuperaTornei = require("./services/recuperaTornei");
 const recuperaAtleti = require("./services/recuperaAtleti");
@@ -141,7 +142,7 @@ const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
      * Creazione del server ed ascolto sulla porta effimera 3040
      */
     const server = http.createServer(app);
-    server.listen(3040, () => {
+    server.listen(conf.port, () => {
         console.log("---> server running");
     });
 })();
