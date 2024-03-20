@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
 const conf = JSON.parse(fs.readFileSync("conf.json"));
-//servizi 
+//servizi
 const recuperaTornei = require("./services/recuperaTornei");
 const recuperaAtleti = require("./services/recuperaAtleti");
 const recuperaGironi = require("./services/recuperaGironi");
@@ -14,96 +14,93 @@ const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
 const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
 
 (() => {
+  //gestione cors
+  const corsOptions = {
+    origin: "*",
+    methods: "POST",
+    optionsSuccessStatus: 204,
+  };
+  app.use(cors(corsOptions));
 
-    //gestione cors
-    const corsOptions = {
-        origin: "*",
-        methods: "POST",
-        optionsSuccessStatus: 204,
-    };
-    app.use(cors(corsOptions));
-
-    app.use(bodyParser.json());
-    app.use(
-        bodyParser.urlencoded({
-            extended: true,
-        }),
-    );
-
-    //reindirizzamento a cartella public con la form di login
-    app.use("/scherma", express.static(path.join(__dirname, "public")));
-
-
-    /**
-     * Funzione per recuperare gli atleti di un torneo
-     */
-    app.post("/scherma/atleti", async (request, response) => {
-        const { nomeTorneo, data } = request.body;
-        try {
-            const result = await recuperaAtleti(nomeTorneo, data);
-            response.json({ response: result });
-        } catch (error) {
-            response.status(500).json({ error: error.message });
-        }
-    });
-    /**
-     * Funzione per recuperare i tornei salvati sul server
-     */
-    app.get("/scherma/tornei", async (request, response) => {
-
-        try {
-            recuperaTornei().then(result => {
-                response.json({ response: result.reverse() });
-            });
-        } catch (error) {
-            response.status(500).json({ error: error.message });
-        }
-    });
-
-    /**
-     * Funzione per recuperare i gironi di un torneo
-     */
-    app.post("/scherma/gironi", async (request, response) => {
-        const { nomeTorneo, data } = request.body;
-        try {
-            const result = await recuperaGironi(nomeTorneo, data);
-            response.json({ response: result });
-        } catch (error) {
-            response.status(500).json({ error: error.message });
-        }
-    });
-
-    /**
-     * Funzione per recuperare la classifica dei gironi di un torneo
-     */
-    app.post("/scherma/classificaGironi", async (request, response) => {
-        const { nomeTorneo, data } = request.body;
-        try {
-            const result = await recuperaGironi(nomeTorneo, data);
-            response.json({ response: result });
-        } catch (error) {
-            response.status(500).json({ error: error.message });
-        }
+  app.use(bodyParser.json());
+  app.use(
+    bodyParser.urlencoded({
+      extended: true,
     })
+  );
 
-    /**
-     * Funzione per recuperare l'eliminazione diretta di un torneo
-     */
-    app.post("/scherma/eliminazioneDiretta", async (request, response) => {
-        const { nomeTorneo, data, tipologia } = request.body;
-        try {
-            const result = await eliminazineDiretta(nomeTorneo, data, tipologia);
-            response.json({ response: result });
-        } catch (error) {
-            response.status(500).json({ error: error.message });
-        }
-    });
+  //reindirizzamento a cartella public con la form di login
+  app.use("/scherma", express.static(path.join(__dirname, "public")));
 
-    /**
-     * Gestione richiesta servizi/pagine non disponibili
-     */
-    app.use((req, res, next) => {
-        res.status(404).send(`
+  /**
+   * Funzione per recuperare gli atleti di un torneo
+   */
+  app.post("/scherma/atleti", async (request, response) => {
+    const { nomeTorneo, data } = request.body;
+    try {
+      const result = await recuperaAtleti(nomeTorneo, data);
+      response.json({ response: result });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
+  /**
+   * Funzione per recuperare i tornei salvati sul server
+   */
+  app.get("/scherma/tornei", async (request, response) => {
+    try {
+      recuperaTornei().then((result) => {
+        response.json({ response: result.reverse() });
+      });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * Funzione per recuperare i gironi di un torneo
+   */
+  app.post("/scherma/gironi", async (request, response) => {
+    const { nomeTorneo, data } = request.body;
+    try {
+      const result = await recuperaGironi(nomeTorneo, data);
+      response.json({ response: result });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * Funzione per recuperare la classifica dei gironi di un torneo
+   */
+  app.post("/scherma/classificaGironi", async (request, response) => {
+    const { nomeTorneo, data } = request.body;
+    try {
+      const result = await recuperaGironi(nomeTorneo, data);
+      response.json({ response: result });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * Funzione per recuperare l'eliminazione diretta di un torneo
+   */
+  app.post("/scherma/eliminazioneDiretta", async (request, response) => {
+    const { nomeTorneo, data, tipologia } = request.body;
+    try {
+      const result = await eliminazineDiretta(nomeTorneo, data, tipologia);
+      response.json({ response: result });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * Gestione richiesta servizi/pagine non disponibili
+   */
+  app.use((req, res, next) => {
+    res.status(404).send(`
         <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -137,12 +134,12 @@ const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
 </html>
 
         `);
-    });
-    /**
-     * Creazione del server ed ascolto sulla porta effimera 3040
-     */
-    const server = http.createServer(app);
-    server.listen(conf.port, () => {
-        console.log("---> server running");
-    });
+  });
+  /**
+   * Creazione del server ed ascolto sulla porta effimera 3040
+   */
+  const server = http.createServer(app);
+  server.listen(3040, () => {
+    console.log("---> server running");
+  });
 })();
