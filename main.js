@@ -12,6 +12,7 @@ const recuperaAtleti = require("./services/recuperaAtleti");
 const recuperaGironi = require("./services/recuperaGironi");
 const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
 const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
+const accessLogin = require("./services/accessLogin.js");
 
 (() => {
   //gestione cors
@@ -96,6 +97,45 @@ const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
     }
   });
 
+   /**
+   * Gestione credenziali accesso 
+   */
+   const adminAccess = JSON.parse(fs.readFileSync("./credAdmin.json"));
+   app.post("/scherma/accessLogin", (req, res) => {
+     const username = req.headers.username;
+     const password = req.headers.password;
+     if (username == adminAccess.username && password == adminAccess.password) {
+       res.json({ result: "admin" });
+     } else {
+       checkLogin(username, password)
+         .then(() => {
+           res.json({ result: "utenteReg" });
+         })
+         .catch(() => {
+           res.status(401); //401 è il codice http Unauthorized)
+           res.json({ result: "Unauthorized" });
+         });
+     }
+   });
+ 
+   const checkLogin = (username, password) => {
+     return new Promise((res, rej) => {
+       accessLogin().then((result) => {
+         let check = false;
+         result.forEach((utente) => {
+           if (utente.Email == username && utente.Password == password) {
+             check = true;
+           }
+         });
+         if (check) {
+           res();
+         } else {
+           rej();
+         }
+       });
+     });
+   };
+
   /**
    * Gestione richiesta servizi/pagine non disponibili
    */
@@ -135,6 +175,7 @@ const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
 
         `);
   });
+
   /**
    * Creazione del server ed ascolto sulla porta effimera 3040
    */
@@ -143,3 +184,4 @@ const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
     console.log("---> server running");
   });
 })();
+

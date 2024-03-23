@@ -4,9 +4,9 @@
  */
 export const recuperaTornei = async () => {
   return await fetch("/scherma/tornei")
-      .then((response) => response.json())
-      .then((response) => response.response)
-      .catch((error) => error);
+    .then((response) => response.json())
+    .then((response) => response.response)
+    .catch((error) => error);
 };
 
 /**
@@ -36,21 +36,21 @@ export const recuperaAtleta = (nometorneo, data) => {
 /**
  * Funzione per recuperare i dati per comporre la tabella dell'eliminazione diretta
  */
-export const recuperaEliminazioneDiretta = async(nometorneo, data) =>{
+export const recuperaEliminazioneDiretta = async (nometorneo, data) => {
   return await fetch("/scherma/eliminazioneDiretta", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        nomeTorneo: nometorneo,
-        data: data,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => response.response)
-      .catch((error) => error);
-}
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      nomeTorneo: nometorneo,
+      data: data,
+    }),
+  })
+    .then((response) => response.json())
+    .then((response) => response.response)
+    .catch((error) => error);
+};
 
 /**
  * Funzione di fetching per recuperare i gironi salvati su database mysql usando il servizio nodejs apposito
@@ -58,16 +58,17 @@ export const recuperaEliminazioneDiretta = async(nometorneo, data) =>{
  */
 export const recuperaGironi = async (nometorneo, data) => {
   return await fetch("/scherma/gironi", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        nomeTorneo: nometorneo,
-        data: data
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => response.response)
-      .catch((error) => error);
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      nomeTorneo: nometorneo,
+      data: data,
+    }),
+  })
+    .then((response) => response.json())
+    .then((response) => response.response)
+    .catch((error) => error);
 };
+
