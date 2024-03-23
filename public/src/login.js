@@ -14,7 +14,7 @@ export const login = (user, pass) => {
         //restituzione riconoscimento dell'utente prof
         sessionStorage.setItem("username", user);
         sessionStorage.setItem("password", pass);
-        window.location.href = "./utenteRegistrato/utenteReg.html";
+        window.location.href = "./utenteRegistrato/index.html";
       } else if (data.result == "admin") {
         //restituzione riconoscimento dell'utente admin
         sessionStorage.setItem("username", user);
