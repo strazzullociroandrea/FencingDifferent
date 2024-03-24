@@ -72,3 +72,24 @@ export const recuperaGironi = async (nometorneo, data) => {
     .catch((error) => error);
 };
 
+/**
+ * Funzione di fetching per recuperare i gironi salvati su database mysql usando il servizio nodejs apposito
+ * @returns promise
+ */
+export const iscriviUtenteReg = async (nometorneo, data, user, pass) => {
+  return await fetch("/scherma/iscriviUtenteReg", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      username: user,
+      password: pass,
+    },
+    body: JSON.stringify({
+      nomeTorneo: nometorneo,
+      data: data,
+    }),
+  })
+    .then((response) => response.json())
+    .then((response) => response.response)
+    .catch((error) => error);
+};

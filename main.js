@@ -13,7 +13,7 @@ const recuperaGironi = require("./services/recuperaGironi");
 const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
 const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
 const accessLogin = require("./services/accessLogin.js");
-
+const iscriviUtenteReg = require("./services/iscriviUtenteReg.js");
 (() => {
   //gestione cors
   const corsOptions = {
@@ -97,45 +97,59 @@ const accessLogin = require("./services/accessLogin.js");
     }
   });
 
-   /**
-   * Gestione credenziali accesso 
+  /**
+   * Gestione credenziali accesso
    */
-   const adminAccess = JSON.parse(fs.readFileSync("./credAdmin.json"));
-   app.post("/scherma/accessLogin", (req, res) => {
-     const username = req.headers.username;
-     const password = req.headers.password;
-     if (username == adminAccess.username && password == adminAccess.password) {
-       res.json({ result: "admin" });
-     } else {
-       checkLogin(username, password)
-         .then(() => {
-           res.json({ result: "utenteReg" });
-         })
-         .catch(() => {
-           res.status(401); //401 è il codice http Unauthorized)
-           res.json({ result: "Unauthorized" });
-         });
-     }
-   });
- 
-   const checkLogin = (username, password) => {
-     return new Promise((res, rej) => {
-       accessLogin().then((result) => {
-         let check = false;
-         result.forEach((utente) => {
-           if (utente.Email == username && utente.Password == password) {
-             check = true;
-           }
-         });
-         if (check) {
-           res();
-         } else {
-           rej();
-         }
-       });
-     });
-   };
+  const adminAccess = JSON.parse(fs.readFileSync("./credAdmin.json"));
+  app.post("/scherma/accessLogin", (req, res) => {
+    const username = req.headers.username;
+    const password = req.headers.password;
+    if (username == adminAccess.username && password == adminAccess.password) {
+      res.json({ result: "admin" });
+    } else {
+      checkLogin(username, password)
+        .then(() => {
+          res.json({ result: "utenteReg" });
+        })
+        .catch(() => {
+          res.status(401); //401 è il codice http Unauthorized)
+          res.json({ result: "Unauthorized" });
+        });
+    }
+  });
 
+  const checkLogin = (username, password) => {
+    return new Promise((res, rej) => {
+      accessLogin().then((result) => {
+        let check = false;
+        result.forEach((utente) => {
+          if (utente.Email == username && utente.Password == password) {
+            check = true;
+          }
+        });
+        if (check) {
+          res();
+        } else {
+          rej();
+        }
+      });
+    });
+  };
+
+  /**
+   * Funzione per iscrivere un atleta di un torneo
+   */
+  app.post("/scherma/iscriviUtenteReg", async (request, response) => {
+    const user = request.headers.username;
+    const pass = request.headers.password;
+    const { nomeTorneo, data } = request.body;
+    try {
+      const result = await iscriviUtenteReg(nomeTorneo, data, user);
+      response.json({ response: "iscritto" });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
   /**
    * Gestione richiesta servizi/pagine non disponibili
    */
@@ -184,4 +198,3 @@ const accessLogin = require("./services/accessLogin.js");
     console.log("---> server running");
   });
 })();
-

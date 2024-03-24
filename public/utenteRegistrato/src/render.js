@@ -4,6 +4,7 @@ import {
   recuperaAtleta,
   recuperaEliminazioneDiretta,
   recuperaGironi,
+  iscriviUtenteReg,
 } from "./cache.js";
 
 //------------------------- INIZIO PAGINA PRINCIPALE TORNEI ---------------------------------------
@@ -16,13 +17,16 @@ const templateTdTornei = `<div class="col-6 mt-2" >%value</div>`;
 const templateDivTornei = `
   <div class="card designInput rounded-pill %DIM torneo" id="%ID">
     <div class="card-body">
-      <div class="row justify-content-start fs-3 text-white">
+      <div class="row justify-content-between fs-3 text-white">
         <div class="col-auto">
           <svg height="40" width="40">
             <circle cx="20" cy="20" r="20" fill="%STATUS" />
           </svg>
+          <p class="badge text-wrap">%TITOLO</p>
         </div>
-        <div class="col-auto">%TITOLO</div>
+        <div class="col-auto"> <button class="bottoni-barra elimina" id="%COUNT" type="button">
+          <img src="../person_add.svg" class="pedi-icon" />
+      </button></div>
       </div>
     </div>
   </div>
@@ -44,6 +48,7 @@ export const renderTornei = () => {
             .replace("%DIM", "w-100")
             .replace("%ID", nome + "_" + data)
             .replace("%TITOLO", nome)
+            .replace("%COUNT", nome + "_" + data)
             .replace("%STATUS", svolto ? "green" : "red")
         );
 
@@ -57,6 +62,7 @@ export const renderTornei = () => {
                 .replace("%DIM", "w-100")
                 .replace("%ID", nome + "_" + data)
                 .replace("%TITOLO", nome)
+                .replace("%COUNT", nome + "_" + data)
                 .replace("%STATUS", svolto ? "green" : "red")
             );
             if (i % 2 === 0) {
@@ -74,6 +80,20 @@ export const renderTornei = () => {
               id[0] +
               "&data=" +
               id[1];
+          });
+        });
+        document.querySelectorAll(".elimina").forEach((div) => {
+          div.addEventListener("click", (event) => {
+            event.stopPropagation(); //evita di considerare ulteriori click, come quello sulla card
+            const id = event.currentTarget.id.split("_");
+            iscriviUtenteReg(
+              id[0],
+              id[1],
+              sessionStorage.getItem("username"),
+              sessionStorage.getItem("password")
+            ).then((result) => {
+              console.log(result);
+            });
           });
         });
       }
@@ -614,389 +634,3 @@ const renderClassificaGironi = (classifica) => {
   classificaGironiTabella.innerHTML = html;
 };
 //------------------------- FINE CLASSIFICA GIRONI  ----------------------------------------
-//------------------------- INIZIO PAGINA ELIMINAZIONE DIRETTA -----------------------------
-//Dom
-const tabellone = document.getElementById("tabellone");
-/*
-//Template
-const templateTr = "<tr>%DATA</tr>";
-const templateTd =
-  "<td><div><p>%INDICEUNO %COGNOMEUNO %NOMEUNO --- %INDICEDUE %COGNOMEDUE %NOMEDUE</p></div></td>";
-*/
-/**
- * Funzione per recuperare i gironi per l'eliminazione diretta
- * @param {*} nomeTorneo
- * @param {*} data
- * @param {*} percentualeElim
- * @param {*} numeroGir
- * @returns
- */
-export const recuperaGironiElD = (
-  nomeTorneo,
-  data,
-  percentualeElim,
-  numeroGir
-) => {
-  return new Promise((resolve, reject) => {
-    recuperaGironi(nomeTorneo, data)
-      .then((response) => {
-        if (response) {
-          let contaGirone = 1;
-          const listaGir = [];
-          //Divisione per gironi
-          let divisiPerGirone = dividiPerGirone(response);
-          //Accoppiamento atleti con stesso assalto (Sfidante vs Sfidato)
-          const divisiPerAssalto = accoppiaPerAssalto(divisiPerGirone);
-          //Visualizzazione in finestra
-          divisiPerGirone.forEach((girone) => {
-            const partecipanti = girone.partecipanti;
-            const partecipantiRedux = partecipanti.filter(
-              (elem, index, self) =>
-                index ===
-                self.findIndex((t) => {
-                  return (
-                    t.nome === elem.nome &&
-                    t.cognome === elem.cognome &&
-                    t.codiceFis === elem.codiceFis &&
-                    t.societa === elem.societa &&
-                    t.ranking === elem.ranking
-                  );
-                })
-            );
-            distribuisciGiocatori(numeroGir, partecipantiRedux).forEach(
-              (result) => {
-                const tot = {};
-                tot["girone"] = contaGirone++;
-                const lista = [];
-                result.forEach((partecipante, index) => {
-                  let obj = {};
-                  const assaltiInComune = [];
-                  divisiPerAssalto.forEach((girone) => {
-                    girone.partecipanti.forEach((assalto) => {
-                      if (
-                        assalto.partecipanteUno.codiceFis ===
-                          partecipante.codiceFis ||
-                        assalto.partecipanteDue.codiceFis ===
-                          partecipante.codiceFis
-                      ) {
-                        assaltiInComune.push(assalto);
-                      }
-                    });
-                  });
-
-                  obj["cognome"] = partecipante.cognome;
-                  obj["nome"] = partecipante.nome;
-                  obj["ranking"] = partecipante.ranking;
-                  obj["societa"] = partecipante.societa;
-                  obj["assalti"] = [];
-
-                  result.forEach((altroPartecipante, indexAltro) => {
-                    if (index !== indexAltro) {
-                      let punteggioTemp = "-";
-                      assaltiInComune.forEach((assalto) => {
-                        if (
-                          (assalto.partecipanteUno.codiceFis ===
-                            partecipante.codiceFis &&
-                            assalto.partecipanteDue.codiceFis ===
-                              altroPartecipante.codiceFis) ||
-                          (assalto.partecipanteDue.codiceFis ===
-                            partecipante.codiceFis &&
-                            assalto.partecipanteUno.codiceFis ===
-                              altroPartecipante.codiceFis)
-                        ) {
-                          punteggioTemp =
-                            assalto.partecipanteUno.codiceFis ===
-                            partecipante.codiceFis
-                              ? assalto.partecipanteUno.punteggio
-                              : assalto.partecipanteDue.punteggio;
-                        }
-                      });
-                      obj.assalti.push(punteggioTemp);
-                    } else {
-                      obj.assalti.push(" ");
-                    }
-                  });
-                  lista.push(obj);
-                });
-                tot["atleti"] = lista;
-                listaGir.push(tot);
-              }
-            );
-          });
-          //recupero la classifica gironi e la uso per creare il tabellone delle eliminazioni dirette
-          resolve(
-            riordinaLista(
-              creaClassGir(listaGir, creaMatrici(listaGir)),
-              percentualeElim
-            )
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  });
-};
-/**
- * Funzione per recuperare la classifica dei gironi
- * @returns
- */
-const recuperaClassificaGironi = (idParam, dataParam) => {
-  return new Promise((resolve, reject) => {
-    recuperaTornei().then((response) => {
-      response.forEach((torneo) => {
-        if (torneo.nome === idParam && torneo.data === dataParam) {
-          const { percentualeEliminazione, nGironi } = torneo;
-          recuperaGironiElD(
-            idParam,
-            dataParam,
-            percentualeEliminazione,
-            nGironi
-          ).then((response) => resolve(response));
-        }
-      });
-    });
-  });
-};
-/**
- * Funzione per generare un array di json. Ogni json rappresenta una fase ad eliminazione diretta
- * @param {*} response
- * @returns
- */
-const riordinaEliminazione = (response) => {
-  const riordinatiPerEliminazione = [];
-  //riordina per stessa eliminazione diretta
-  response.forEach((partecipante) => {
-    const index = riordinatiPerEliminazione.findIndex((element) => {
-      return element.id === partecipante.tipologia;
-    });
-    if (index !== -1) {
-      riordinatiPerEliminazione[index].partecipanti.push(partecipante);
-    } else {
-      riordinatiPerEliminazione.push({
-        id: partecipante.tipologia,
-        partecipanti: [partecipante],
-      });
-    }
-  });
-  return riordinatiPerEliminazione;
-};
-/**
- * Funzione per aggiustare il numero di partecipanti ad una fase ad eliminazione diretta
- * @param {*} array
- * @param {*} lunghezza
- * @returns
- */
-/*
-const aggiustaPartecipanti = (array, lunghezza) => {
-  //metto il numero di partecipanti
-  for (let i = 0; i < lunghezza; i++) {
-    array.push({
-      cognome: null,
-      nome: null,
-      date: null,
-      differenza: null,
-      nome: null,
-      societa: null,
-      stato: null,
-      subite: null,
-    });
-  }
-  return array;
-};
-*/
-
-/**
- * Funzione per recuperare le eliminazioni dirette
- * @param {*} classificaGironi
- * @returns
- */
-/*
-const recuperaEliminazioneDirettaFunction = (
-  classificaGironi,
-  idParam,
-  dataParam
-) => {
-  return new Promise((resolve, reject) => {
-    recuperaEliminazioneDiretta(idParam, dataParam).then((response) => {
-      const eliminazioni = riordinaEliminazione(response);
-      let numeroTabelloneMassimo = [];
-      const tabelloni = [];
-      response.forEach((persona) => {
-        const tabTemp = parseInt(
-          persona.tipologia.replace("Eliminazione diretta tab ", "")
-        );
-        if (!numeroTabelloneMassimo.includes(tabTemp))
-          numeroTabelloneMassimo.push(tabTemp);
-      });
-      //sorting numero tabellone
-      numeroTabelloneMassimo = numeroTabelloneMassimo.sort((a, b) => b - a);
-      //metto il numero di partecipanti corretti al numero di tabellone
-      classificaGironi = aggiustaPartecipanti(
-        classificaGironi,
-        numeroTabelloneMassimo[0] - classificaGironi.length
-      );
-      const primoAccoppiamenti = generaAccoppiamento(classificaGironi);
-      //prima eliminazione diretta inserita
-      tabelloni.push({
-        tipologia: numeroTabelloneMassimo[0],
-        assegnamenti: primoAccoppiamenti,
-      });
-      //genero gli altri tabelloni
-      {
-        //prendo le singole fasi ad eliminazioni
-        for (let i = 1; i < eliminazioni.length; i++) {
-          const partecipanti = eliminazioni[i].partecipanti;
-          //prendo tutti i partecipanti che hanno assegnato primo o secondo undefined e li metto già nella fase successiva
-          const partecipantiSuccessivi = [];
-          for (let j = 0; j < tabelloni[i - 1].assegnamenti.length; j++) {
-            if (
-              tabelloni[i - 1].assegnamenti[j].primo.nome == null &&
-              tabelloni[i - 1].assegnamenti[j].primo.cognome == null
-            ) {
-              const value = tabelloni[i - 1].assegnamenti.splice(j, 1)[0];
-              partecipantiSuccessivi.push(value.secondo);
-            } else if (
-              tabelloni[i - 1].assegnamenti[j].secondo.nome == null &&
-              tabelloni[i - 1].assegnamenti[j].secondo.cognome == null
-            ) {
-              const value = tabelloni[i - 1].assegnamenti.splice(j, 1)[0];
-              partecipantiSuccessivi.push(value.primo);
-            }
-          }
-
-          //tolti gli undefined trovo i partecipanti in ordine
-          for (let j = 0; j < tabelloni[i - 1].assegnamenti.length; j++) {
-            //primo - secondo dell'ennesimo assegnamento di una fase ad eliminazione diretta
-            const primo = tabelloni[i - 1].assegnamenti[j].primo;
-            const secondo = tabelloni[i - 1].assegnamenti[j].secondo;
-            partecipanti.forEach((partecipante) => {
-              if (
-                partecipante.nome === primo.nome &&
-                partecipante.cognome === primo.cognome &&
-                partecipante.societa === primo.societa
-              ) {
-                partecipantiSuccessivi.push(primo);
-              } else if (
-                partecipante.nome === secondo.nome &&
-                partecipante.cognome === secondo.cognome &&
-                partecipante.societa === secondo.societa
-              ) {
-                partecipantiSuccessivi.push(secondo);
-              }
-            });
-          }
-          //inserisco il nuovo tabellone
-          tabelloni.push({
-            tipologia: numeroTabelloneMassimo[i],
-            assegnamenti: generaAccoppiamento(
-              aggiustaPartecipanti(partecipantiSuccessivi)
-            ),
-          });
-        }
-      }
-      resolve(tabelloni);
-    });
-  });
-};
-*/
-const prova = (idParam, dataParam, classificaGironi) => {
-  const tabs = [
-    [0, 3, 1, 2],
-    [0, 7, 3, 4, 2, 5, 1, 6],
-    [0, 15, 7, 8, 4, 11, 3, 12, 2, 13, 5, 10, 6, 9, 1, 14],
-  ];
-  let checkTab = false;
-  let countEsp = 1;
-  while (!checkTab) {
-    if (classificaGironi.length < Math.pow(2, countEsp)) {
-      checkTab = true;
-    } else {
-      countEsp++;
-    }
-  }
-  const tabScelta = [];
-  tabs.forEach((tabellaBella) => {
-    if (tabellaBella.length == Math.pow(2, countEsp)) {
-      tabellaBella.forEach((element) => {
-        tabScelta.push(element);
-      });
-      for (let index = 0; index < tabScelta.length; index++) {
-        tabScelta.splice(index, 1, classificaGironi[tabScelta[index]]);
-      }
-    }
-  });
-  recuperaEliminazioneDiretta(idParam, dataParam).then((response) => {
-    const eliminazioni = riordinaEliminazione(response);
-    console.log(eliminazioni);
-  });
-};
-
-const creaTabelloneCorrente = (primaColonna, tabelloniDB) => {}
-
-/**
- * Funzione per generare l'accoppiamento tra gli atleti di una determinata fase * DA SISTEMARE
- * @param {*} array
- * @returns
- */
-/*
-const generaAccoppiamento = (array) => {
-  const arrayFinale = [];
-  let toltoTemp = undefined;
-  if (array.length % 2 !== 0)
-    toltoTemp = {
-      primo: array.splice(array.length / 2, 1)[0],
-      secondo: { posizione: "", cognome: "", nome: "" },
-    };
-  const arrayUno = array.slice(0, array.length / 2);
-  const arrayDue = array.slice(array.length / 2, array.length);
-  let contaSopra = 0;
-  for (let i = 0; i < arrayUno.length; i++) {
-    if (i % 2 === 0) {
-      arrayFinale[contaSopra] = {
-        primo: arrayUno[i],
-        secondo: arrayDue[arrayDue.length - 1 - i],
-      };
-      contaSopra++;
-    } else {
-      arrayFinale[arrayUno.length - contaSopra] = {
-        primo: arrayUno[i],
-        secondo: arrayDue[arrayDue.length - i - 1],
-      };
-    }
-  }
-  if (toltoTemp !== undefined)
-    arrayFinale.splice(arrayFinale.length / 2, 0, toltoTemp);
-
-  // Se ci sono atleti non associati, aggiungili automaticamente alla fase successiva
-  for (let i = 0; i < arrayFinale.length; i++) {
-    if (arrayFinale[i].primo.nome === "") {
-      arrayFinale[i].primo.nome = "Atleta non associato";
-      arrayFinale[i].primo.societa = "Non associato";
-    }
-    if (arrayFinale[i].secondo.nome === "") {
-      arrayFinale[i].secondo.nome = "Atleta non associato";
-      arrayFinale[i].secondo.societa = "Non associato";
-    }
-  }
-
-  return arrayFinale;
-};
-*/
-
-/**
- * Funzione per la visualizzazione in finestra dell'eliminazione diretta
- * @param {*} nomeTorneo
- * @param {*} data
- */
-export const renderEliminazioneDiretta = (nomeTorneo, data) => {
-  recuperaClassificaGironi(nomeTorneo, data).then((classificaGironi) => {
-    //recupero solo quelli qualificati
-    classificaGironi = classificaGironi.filter(
-      (element) => element.stato === "Qualificato"
-    );
-    //recupero le eliminazioni dirette
-    prova(nomeTorneo, data, classificaGironi);
-  });
-};
-//------------------------- FINE ELIMINAZIONE DIRETTA  ----------------------------------------
