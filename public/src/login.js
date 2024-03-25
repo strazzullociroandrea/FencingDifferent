@@ -19,7 +19,7 @@ export const login = (user, pass) => {
         //restituzione riconoscimento dell'utente admin
         sessionStorage.setItem("username", user);
         sessionStorage.setItem("password", pass);
-        window.location.href = "./admin/admin.html";
+        window.location.href = "./admin/index.html";
       }
     })
     .catch((error) => {
