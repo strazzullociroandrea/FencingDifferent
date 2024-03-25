@@ -14,6 +14,8 @@ const recuperaClassificaGironi = require("./services/recuperaClassificaGironi");
 const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
 const accessLogin = require("./services/accessLogin.js");
 const iscriviUtenteReg = require("./services/iscriviUtenteReg.js");
+const recuperaStorico = require("./services/recuperaStorico.js");
+
 (() => {
   //gestione cors
   const corsOptions = {
@@ -146,6 +148,19 @@ const iscriviUtenteReg = require("./services/iscriviUtenteReg.js");
     try {
       const result = await iscriviUtenteReg(nomeTorneo, data, user);
       response.json({ response: "iscritto" });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * Funzione per recupero storico
+   */
+  app.post("/scherma/recuperaStorico", async (request, response) => {
+    const { user } = request.body;
+    try {
+      const result = await recuperaStorico(user);
+      response.json({ response: result });
     } catch (error) {
       response.status(500).json({ error: error.message });
     }

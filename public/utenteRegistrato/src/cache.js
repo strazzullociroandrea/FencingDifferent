@@ -73,7 +73,7 @@ export const recuperaGironi = async (nometorneo, data) => {
 };
 
 /**
- * Funzione di fetching per recuperare i gironi salvati su database mysql usando il servizio nodejs apposito
+ * Funzione di fetching per iscrivere un utente a un torneo su database mysql usando il servizio nodejs apposito
  * @returns promise
  */
 export const iscriviUtenteReg = async (nometorneo, data, user, pass) => {
@@ -87,6 +87,25 @@ export const iscriviUtenteReg = async (nometorneo, data, user, pass) => {
     body: JSON.stringify({
       nomeTorneo: nometorneo,
       data: data,
+    }),
+  })
+    .then((response) => response.json())
+    .then((response) => response.response)
+    .catch((error) => error);
+};
+
+/**
+ * Funzione di fetching per recuperare i gironi salvati su database mysql usando il servizio nodejs apposito
+ * @returns promise
+ */
+export const recuperaStorico = async (user) => {
+  return await fetch("/scherma/recuperaStorico", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      user: user,
     }),
   })
     .then((response) => response.json())

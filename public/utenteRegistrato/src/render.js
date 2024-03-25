@@ -5,6 +5,7 @@ import {
   recuperaEliminazioneDiretta,
   recuperaGironi,
   iscriviUtenteReg,
+  recuperaStorico,
 } from "./cache.js";
 
 //------------------------- INIZIO PAGINA PRINCIPALE TORNEI ---------------------------------------
@@ -634,3 +635,21 @@ const renderClassificaGironi = (classifica) => {
   classificaGironiTabella.innerHTML = html;
 };
 //------------------------- FINE CLASSIFICA GIRONI  ----------------------------------------
+export const renderStorico = (div) => {
+  recuperaStorico(sessionStorage.getItem("username")).then((tornei) => {
+    if (tornei) {
+      //template
+      const templateStorico = `<tr><th>POS</th><th>NOME TORNEO</th><th>DATA TORNEO</th></tr>`;
+      let html = "";
+      html = templateStorico;
+      tornei.forEach((element, index) => {
+        html += templateStorico
+          .replaceAll("th>", "td>")
+          .replace("POS", index + 1)
+          .replace("NOME TORNEO", element.nomeTorneo)
+          .replace("DATA TORNEO", element.dataTorneo);
+      });
+      div.innerHTML = html;
+    }
+  });
+};
