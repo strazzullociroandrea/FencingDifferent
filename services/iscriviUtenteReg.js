@@ -40,7 +40,7 @@ const iscriviUtenteReg = async (nomeTorneo, data, user) => {
         "','" +
         data +
         "','-1','" +
-        idPrimoAssalto +
+        "iniziale" +
         "','-1')";
 
       const [fne, fs] = await connection.execute(sqlAdd);
