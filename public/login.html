@@ -21,7 +21,7 @@
             <img class="pedi-immagine" src="./Logo.png" />
           </div>
         </div>
-        <div id="form">
+        <form id="form" onsubmit="return false">
           <div class="row">
             <div class="col">
               <label for="email" class="text-light">Email:</label>
@@ -49,14 +49,14 @@
             </div>
             <div class="col-auto">
               <input
-                type="button"
+                type="submit"
                 id="invio"
                 class="inputInvia rounded-4"
                 value="Invio"
               />
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
     <script src="src/login.js" type="module"></script>
