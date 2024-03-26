@@ -127,9 +127,9 @@ const chiudiTorneo = require("./services/chiudiTorneo.js");
     }
   });
   app.post("/scherma/chiudiTorneo", async (request, response) => {
-    const { nomeTorneo, data } = request.body;
+    const { nomeTorneo, data, tabella,id,value } = request.body;
     try {
-      const result = await chiudiTorneo(nomeTorneo, data);
+      const result = await chiudiTorneo(nomeTorneo, data,tabella,id,value);
       response.json({ response: result });
     } catch (error) {
       response.status(500).json({ error: error.message });

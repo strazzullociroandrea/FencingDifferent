@@ -15,7 +15,6 @@ const recuperaStato = async (nomeTorneo, data) => {
         const [rows, fields] = await connection.execute(sql);
         await connection.end();
         if (rows.length > 0) {
-            console.log(rows);
             return rows;
         } else {
             return [];
