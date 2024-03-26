@@ -21,7 +21,7 @@ const creaTorneo  = require("./services/creaTorneo.js");
 const eliminaTorneo = require("./services/eliminaTorneo.js");
 const recuperaFasi = require("./services/recuperaFasi.js");
 const recuperaStato = require("./services/recuperaStato.js");
-
+const chiudiTorneo = require("./services/chiudiTorneo.js");
 (() => {
   //gestione cors
   const corsOptions = {
@@ -120,13 +120,23 @@ const recuperaStato = require("./services/recuperaStato.js");
   app.post("/scherma/statoTorneo", async (request, response) => {
     const { nomeTorneo, data } = request.body;
     try {
-      const result = await recuperaStato(nomeTorneo, data);
-      console.log(result);
+      const result = await recuperaStato(nomeTorneo, data);+
       response.json({ response: result });
     } catch (error) {
       response.status(500).json({ error: error.message });
     }
   });
+  app.post("/scherma/chiudiTorneo", async (request, response) => {
+    const { nomeTorneo, data } = request.body;
+    try {
+      const result = await chiudiTorneo(nomeTorneo, data);
+      response.json({ response: result });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
+
+  
   
   /**
    * Funzione per recuperare l'eliminazione diretta di un torneo

@@ -89,3 +89,17 @@ export const statoTorneo = (dizionario) =>{
     .catch(error => reject(error));
   });
 }
+
+export const chiudiTorneo = (dizionario) =>{
+  return new Promise((resolve,reject)=>{
+    fetch("/scherma/chiudiTorneo",{
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(dizionario),
+    }).then(response => response.json())
+    .then(response => resolve(response.response))
+    .catch(error => reject(error));
+  });
+}

@@ -1,5 +1,5 @@
 
-import { recuperaFasi,statoTorneo } from "./cache.js";
+import { recuperaFasi,statoTorneo,chiudiTorneo } from "./cache.js";
 const progressBar = document.getElementById("progressBar");
 const opera = document.getElementById("opera");
 const url = new URL(window.location.href);
@@ -60,10 +60,12 @@ window.onload = () =>{
         console.log(response);
         if(response[0].svolto == 1){
             opera.innerHTML = paginaModifica.replace("%c","").replace("%m",modalConferma);
-            const modal = new bootstrap.Modal("#chiudiTorneoConferma");
             document.getElementById("chiudiTorneo").onclick = () =>{
                 console.log("torneo chiuso");
-                modal.hide();
+                chiudiTorneo({nomeTorneo:idParam,data:dataParam}).then(response=>{
+                    window.location.reload();
+                })
+                
             }
         }else{ 
             opera.innerHTML = paginaModifica.replace("%c","disabled").replace("%m","");
