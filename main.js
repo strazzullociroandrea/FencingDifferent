@@ -15,6 +15,8 @@ const eliminazineDiretta = require("./services/eliminazioneDiretta.js");
 const accessLogin = require("./services/accessLogin.js");
 const iscriviUtenteReg = require("./services/iscriviUtenteReg.js");
 const recuperaStorico = require("./services/recuperaStorico.js");
+const assalti = require("./services/assalti.js");
+const aggiornaAssalti = require("./services/aggiornaAssalti.js");
 
 (() => {
   //gestione cors
@@ -163,6 +165,30 @@ const recuperaStorico = require("./services/recuperaStorico.js");
       response.json({ response: result });
     } catch (error) {
       response.status(500).json({ error: error.message });
+    }
+  });
+  /**
+   * Servizio per fare l'aggiornamento di un assalto, modifica il punteggio della riga assegnata all'atleta con codice fis uno
+   */
+  app.post("/scherma/aggiornaAssalti",async (request, response)=>{
+    const {torneo, data, fisUno, fisDue, punteggio, tipologia} = request.body;
+    if(torneo && data && fisUno && fisDue && punteggio  && tipologia && torneo !== "" && data !== ""  && fisUno !== ""  && fisDue !== ""  && punteggio !== ""  && tipologia !== "" ){
+      const response = await aggiornaAssalti(torneo, data, fisUno, fisDue, punteggio, tipologia);
+      response.json(response);
+    }else{
+      response.status(400).json({ result: "Elementi non completi o non validi" });
+    }
+  });
+  /**
+   * Servizio per registrare assalti in comune / upgrade 
+   */
+  app.post("/scherma/assegnaAssalti", async(request, response)=>{
+    const {torneo, data, fisUno, fisDue, punteggioUno, punteggioDue, tipologia} = request.body;
+    if(torneo && data && fisUno && fisDue && punteggioUno && punteggioDue && tipologia && torneo !== "" && data !== ""  && fisUno !== ""  && fisDue !== ""  && punteggioUno !== ""  && punteggioDue !== "" && tipologia !== "" ){
+      const response = await assalti(torneo, data, fisUno, fisDue, punteggioUno, punteggioDue, tipologia);
+      response.json(response);
+    }else{
+      response.status(400).json({ result: "Elementi non completi o non validi" });
     }
   });
   /**

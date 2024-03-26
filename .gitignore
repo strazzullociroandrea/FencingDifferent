@@ -130,3 +130,4 @@ dist
 .pnp.*
 conf.json
 credAdmin.json
+package-lock.json
