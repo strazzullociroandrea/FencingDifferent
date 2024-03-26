@@ -49,3 +49,17 @@ export const creaTorneo = (dizionario) =>{
       .catch((error) => reject(error));
   });
 }
+
+export const eliminaTorneo = (dizionario) =>{
+  return new Promise((resolve,reject)=>{
+    fetch("/scherma/eliminaTorneo",{
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(dizionario),
+    }).then(response => response.json())
+    .then(response => resolve(response.result))
+    .catch(error => reject(error));
+  });
+}

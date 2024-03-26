@@ -18,7 +18,7 @@ const recuperaStorico = require("./services/recuperaStorico.js");
 const assalti = require("./services/assalti.js");
 const aggiornaAssalti = require("./services/aggiornaAssalti.js");
 const creaTorneo  = require("./services/creaTorneo.js");
-
+const eliminaTorneo = require("./services/eliminaTorneo.js");
 (() => {
   //gestione cors
   const corsOptions = {
@@ -62,7 +62,23 @@ const creaTorneo  = require("./services/creaTorneo.js");
       response.status(500).json({ error: error.message });
     }
   });
-
+  /**
+     * Funzione per eliminare un torneo
+     */
+  app.post("/scherma/eliminaTorneo", async (request, response) => {
+    const { nome, data } = request.body;
+    if(nome && data && nome !== "" && data !== ""){
+      try {
+        const result = await eliminaTorneo(nome, data);
+        response.json(result);
+      } catch (error) {
+        response.status(500).json({ result: error.message });
+      }
+    }else{
+      response.status(400).json({ result: "Dati non validi" });
+    }
+   
+  });
   /**
    * Funzione per recuperare i gironi di un torneo
    */

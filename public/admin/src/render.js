@@ -1,5 +1,5 @@
 //Import moduli
-import { recuperaTornei, recuperaAtleta } from "./cache.js";
+import { recuperaTornei, recuperaAtleta,eliminaTorneo } from "./cache.js";
 
 //------------------------- INIZIO PAGINA PRINCIPALE TORNEI ---------------------------------------
 //Dom
@@ -19,7 +19,7 @@ const templateDivTornei = `
           <p class="badge text-wrap">%TITOLO</p>
         </div>
         <div class="col-auto"> 
-        <button class="bottoni-barra elimina" id="%COUNT" type="button">
+        <button class="bottoni-barra modifica" id="%COUNT" type="button">
           <img src="../edit.svg" class="pedi-icon" />
       </button>
         <button class="bottoni-barra elimina" id="%COUNT" type="button">
@@ -47,6 +47,7 @@ export const renderTornei = () => {
             .replace("%ID", nome + "_" + data)
             .replace("%TITOLO", nome)
             .replace("%COUNT", nome + "_" + data)
+            .replace("%COUNT", nome + "_" + data)
             .replace("%STATUS", svolto ? "green" : "red")
         );
 
@@ -60,6 +61,7 @@ export const renderTornei = () => {
                 .replace("%DIM", "w-100")
                 .replace("%ID", nome + "_" + data)
                 .replace("%TITOLO", nome)
+                .replace("%COUNT", nome + "_" + data)
                 .replace("%COUNT", nome + "_" + data)
                 .replace("%STATUS", svolto ? "green" : "red")
             );
@@ -84,14 +86,9 @@ export const renderTornei = () => {
           div.addEventListener("click", (event) => {
             event.stopPropagation(); //evita di considerare ulteriori click, come quello sulla card
             const id = event.currentTarget.id.split("_");
-            iscriviUtenteReg(
-              id[0],
-              id[1],
-              sessionStorage.getItem("username"),
-              sessionStorage.getItem("password")
-            ).then((result) => {
-              console.log(result);
-            });
+            eliminaTorneo({nome: id[0], data: id[1]}).then(response=>{
+              renderTornei();
+            })
           });
         });
       }
