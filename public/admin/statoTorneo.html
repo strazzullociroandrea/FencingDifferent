@@ -35,20 +35,14 @@
         </nav>
         <div class="row justify-content-center mt-5">
             <div class="col-auto">
-                <h1 class="h1 fs-1 fw-bold text-white mt-5">CREA IL TORNEO</h1>
-              </div>
-            <form onsubmit="return false">
-                <input type="date" id="data"/>
-                <input type="text" id="nome" placeholder="Nome"/>
-                <input type="text" id="provincia" placeholder="Provincia"/>
-                <input type="text" id="luogo" placeholder="Luogo"/>
-                <input type="number" id="pel" placeholder="% eliminazione"/>
-                <input type="number" id="ngir" placeholder="Numero gironi"/>
-                <input type="submit" id="invia" value="Invio"/>
-            </form>
+                <h1 class="h1 fs-1 fw-bold text-white mt-5">STATO DEL TORNEO</h1>
+            </div>
+            <div class="progress mt-5">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" role="progressbar"  aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
         </div>
     </div>
-    <script src="./src/creaTorneo.js" type="module"></script>
+    <script src="./src/statoTorneo.js" type="module"></script>
 </body>
 
 </html>

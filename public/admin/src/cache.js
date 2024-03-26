@@ -63,3 +63,16 @@ export const eliminaTorneo = (dizionario) =>{
     .catch(error => reject(error));
   });
 }
+export const recuperaFasi = (dizionario) =>{
+  return new Promise((resolve,reject)=>{
+    fetch("/scherma/selectFasi",{
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(dizionario),
+    }).then(response => response.json())
+    .then(response => resolve(response.response))
+    .catch(error => reject(error));
+  });
+}

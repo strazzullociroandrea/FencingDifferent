@@ -19,6 +19,8 @@ const assalti = require("./services/assalti.js");
 const aggiornaAssalti = require("./services/aggiornaAssalti.js");
 const creaTorneo  = require("./services/creaTorneo.js");
 const eliminaTorneo = require("./services/eliminaTorneo.js");
+const recuperaFasi = require("./services/recuperaFasi.js");
+
 (() => {
   //gestione cors
   const corsOptions = {
@@ -92,6 +94,16 @@ const eliminaTorneo = require("./services/eliminaTorneo.js");
     }
   });
 
+  app.post("/scherma/selectFasi",async(request,response)=>{
+    const { nomeTorneo, data } = request.body;
+    try {
+      const result = await recuperaFasi(nomeTorneo, data);
+      
+      response.json({ response: result });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  });
   /**
    * Funzione per recuperare la classifica dei gironi di un torneo
    */

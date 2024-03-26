@@ -91,6 +91,13 @@ export const renderTornei = () => {
             })
           });
         });
+        document.querySelectorAll(".modifica").forEach((div) => {
+          div.addEventListener("click", (event) => {
+            event.stopPropagation(); //evita di considerare ulteriori click, come quello sulla card
+            const id = event.currentTarget.id.split("_");
+            window.location.href = "./statoTorneo.html?nomeTorneo="+id[0]+"&data="+id[1];
+          });
+        });
       }
     }
   });
