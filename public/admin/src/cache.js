@@ -33,3 +33,19 @@ export const recuperaAtleta = (nometorneo, data) => {
   });
 };
 
+export const creaTorneo = (dizionario) =>{
+  return new Promise((resolve,reject)=>{
+    fetch("/scherma/creaTorneo", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(dizionario),
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        resolve(response.result);
+      })
+      .catch((error) => reject(error));
+  });
+}

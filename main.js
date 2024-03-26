@@ -17,6 +17,7 @@ const iscriviUtenteReg = require("./services/iscriviUtenteReg.js");
 const recuperaStorico = require("./services/recuperaStorico.js");
 const assalti = require("./services/assalti.js");
 const aggiornaAssalti = require("./services/aggiornaAssalti.js");
+const creaTorneo  = require("./services/creaTorneo.js");
 
 (() => {
   //gestione cors
@@ -180,16 +181,28 @@ const aggiornaAssalti = require("./services/aggiornaAssalti.js");
     }
   });
   /**
-   * Servizio per registrare assalti in comune / upgrade 
+   * Servizio per registrare assalti in comune
    */
   app.post("/scherma/assegnaAssalti", async(request, response)=>{
     const {torneo, data, fisUno, fisDue, punteggioUno, punteggioDue, tipologia} = request.body;
     if(torneo && data && fisUno && fisDue && punteggioUno && punteggioDue && tipologia && torneo !== "" && data !== ""  && fisUno !== ""  && fisDue !== ""  && punteggioUno !== ""  && punteggioDue !== "" && tipologia !== "" ){
-      const response = await assalti(torneo, data, fisUno, fisDue, punteggioUno, punteggioDue, tipologia);
-      response.json(response);
+      const res = await assalti(torneo, data, fisUno, fisDue, punteggioUno, punteggioDue, tipologia);
+      response.json(res);
     }else{
       response.status(400).json({ result: "Elementi non completi o non validi" });
     }
+  });
+  /**
+   * Servizio per salvare in db il torneo
+   */
+  app.post("/scherma/creaTorneo",async(request, response)=>{
+      const {data, nome, provincia, luogo, pel, ngir} = request.body;
+      if(data && nome && provincia && luogo && pel && ngir && data !== "" && nome !== "" && provincia !== "" && luogo !== "" && pel !== "" && ngir !== ""){
+        const res = await creaTorneo(data, nome, provincia, luogo, pel, ngir);
+        response.json(res);
+      }else{
+      response.status(400).json({ result: "Elementi non completi o non validi" });
+      }
   });
   /**
    * Gestione richiesta servizi/pagine non disponibili
